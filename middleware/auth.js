@@ -1,9 +1,15 @@
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
+const publicKey = fs.readFileSync(
+  path.resolve(__dirname, "../public.key"),
+  "utf-8"
+);
 
 const auth = (req, res, next) => {
+  const token = req.get("Authorization").split("Bearer ")[1];
+  var decoded = jwt.verify(token, publicKey);
   try {
-    const token = req.get("Authorization").split("Bearer ")[1];
-    var decoded = jwt.verify(token, process.env.SECRET);
     if (decoded.id) {
       next();
     }
